@@ -1,0 +1,18 @@
+.as-charts-layer { position:absolute; inset:0; pointer-events:none; z-index:20; overflow:hidden; }
+.as-chart { position:absolute; pointer-events:auto; background:#fff; border:1px solid var(--line,#e2e5ea); border-radius:10px;
+  box-shadow:0 6px 24px rgba(20,30,50,.12); display:flex; flex-direction:column; overflow:hidden; }
+.as-chart-head { display:flex; align-items:center; gap:6px; padding:6px 8px 2px 10px; cursor:move; user-select:none; }
+.as-chart-title { flex:1; min-width:0; border:1px solid transparent; background:transparent; font:600 14px inherit; font-family:inherit; color:var(--text,#1d2330); padding:2px 4px; border-radius:4px; }
+.as-chart-title:hover, .as-chart-title:focus { border-color:var(--line,#e2e5ea); outline:none; background:#fafbfc; }
+.as-chart-head select { font:12px inherit; font-family:inherit; border:1px solid var(--line,#e2e5ea); border-radius:5px; padding:2px 4px; background:#fff; cursor:pointer; }
+.as-chart-close { border:0; background:transparent; font-size:18px; line-height:1; color:var(--muted,#6b7385); cursor:pointer; padding:0 4px; border-radius:4px; }
+.as-chart-close:hover { background:#fde8e8; color:#c0392b; }
+.as-chart-sub { font-size:11px; color:var(--muted,#6b7385); padding:0 14px 4px; }
+.as-chart-body { flex:1; min-height:0; position:relative; padding:4px 12px 12px; }
+.as-chart-body canvas { width:100% !important; height:100% !important; }
+.as-chart-resize { position:absolute; right:0; bottom:0; width:16px; height:16px; cursor:nwse-resize;
+  background:linear-gradient(135deg, transparent 50%, #c5cad3 50%, #c5cad3 60%, transparent 60%, transparent 70%, #c5cad3 70%, #c5cad3 80%, transparent 80%); }
+.as-tb-btn { display:inline-flex; align-items:center; gap:5px; border:1px solid var(--line,#e2e5ea); background:#fff; color:var(--text,#1d2330);
+  font:13px inherit; font-family:inherit; padding:4px 10px; border-radius:6px; cursor:pointer; margin-left:4px; }
+.as-tb-btn:hover { background:#f0f7f3; border-color:var(--accent,#107c41); color:var(--accent,#107c41); }
+@media (max-width: 600px) { .as-chart { max-width: calc(100vw - 62px); max-height: 60vh; } }

@@ -1,0 +1,56 @@
+// Correr: npx tsx src/core/selftest.ts
+import * as S from './store';
+import * as XLSX from 'xlsx';
+let ok = 0, fail = 0;
+const t = (name: string, got: any, exp: any) => { const g = JSON.stringify(got), e = JSON.stringify(exp); if (g === e) { ok++; console.log('OK  ', name, '=>', g); } else { fail++; console.log('FALLA', name, 'obtuvo', g, 'esperaba', e); } };
+S.resetWorkbook();
+const sh = S.getSheet().id;
+S.setInputs(sh, [{ r: 0, c: 0, input: '1.234,5' }, { r: 1, c: 0, input: '2' }, { r: 2, c: 0, input: '3' }, { r: 3, c: 0, input: '=SUMA(A1:A3)' }]);
+t('SUMA con 1.234,5', S.getValue(sh, 3, 0), 1239.5);
+t('display general', S.getDisplay(sh, 3, 0), '1.239,5');
+S.setInputs(sh, [{ r: 0, c: 1, input: 'uno' }, { r: 1, c: 1, input: 'dos' }, { r: 2, c: 1, input: 'tres' }, { r: 0, c: 2, input: '=BUSCARV(2;A1:B3;2;FALSO)' }, { r: 1, c: 2, input: '=SUMAR.SI(A1:A3;">2")' }, { r: 2, c: 2, input: '=SI(A2>1;"mayor";"menor")' }, { r: 3, c: 2, input: '=BUSCARX(3;A1:A3;B1:B3;"no")' }, { r: 4, c: 2, input: '=PROMEDIO(A2:A3)' }, { r: 5, c: 2, input: '=CONTAR(A1:B3)' }, { r: 6, c: 2, input: '=1/0' }, { r: 7, c: 2, input: '=BUSCARV(99;A1:B3;2;FALSO)' }]);
+t('BUSCARV exacto ;FALSO', S.getValue(sh, 0, 2), 'dos');
+t('SUMAR.SI', S.getValue(sh, 1, 2), 1237.5);
+t('SI', S.getValue(sh, 2, 2), 'mayor');
+t('BUSCARX', S.getValue(sh, 3, 2), 'tres');
+t('PROMEDIO', S.getValue(sh, 4, 2), 2.5);
+t('CONTAR', S.getValue(sh, 5, 2), 3);
+t('#¡DIV/0!', S.getDisplay(sh, 6, 2), '#¡DIV/0!');
+t('#N/A', S.getDisplay(sh, 7, 2), '#N/A');
+S.setInputs(sh, [{ r: 10, c: 0, input: '=B11' }, { r: 10, c: 1, input: '=A11' }]);
+t('ciclo', S.getValue(sh, 10, 0), { error: '#CICLO!' });
+S.setInputs(sh, [{ r: 12, c: 0, input: '1234567' }]); S.setStyle(sh, { r1: 12, c1: 0, r2: 12, c2: 0 }, { numFmt: 'cop' });
+t('cop 1234567', S.getDisplay(sh, 12, 0), '$ 1.234.567,00');
+S.setInputs(sh, [{ r: 13, c: 0, input: '$ 1.500.000' }, { r: 14, c: 0, input: '19%' }, { r: 15, c: 0, input: '24/11/2026' }, { r: 16, c: 0, input: '1.234.567,89' }]);
+t('entrada $ 1.500.000', [S.getValue(sh, 13, 0), S.getDisplay(sh, 13, 0)], [1500000, '$ 1.500.000,00']);
+t('entrada 19%', [S.getValue(sh, 14, 0), S.getDisplay(sh, 14, 0)], [0.19, '19%']);
+t('entrada fecha', S.getDisplay(sh, 15, 0), '24/11/2026');
+t('entrada 1.234.567,89', S.getValue(sh, 16, 0), 1234567.89);
+const before = JSON.stringify(S.getWorkbook());
+S.beginTransaction('tres cambios'); S.setInputs(sh, [{ r: 0, c: 0, input: '100' }]); S.setInputs(sh, [{ r: 1, c: 0, input: '200' }]); S.setStyle(sh, { r1: 0, c1: 0, r2: 0, c2: 0 }, { bold: true }); S.commitTransaction();
+t('tx aplicada', S.getValue(sh, 3, 0), 303); t('undoLabel', S.undoLabel(), 'tres cambios');
+S.undo();
+t('undo restaura libro', JSON.stringify(S.getWorkbook()) === before, true); t('undo restaura motor', S.getValue(sh, 3, 0), 1239.5);
+S.redo(); t('redo', S.getValue(sh, 3, 0), 303); S.undo();
+// sort
+const s2 = S.addSheet().id; t('addSheet nombre', S.getSheet(s2).name, 'Hoja2');
+S.setInputs(s2, [{ r: 0, c: 0, input: 'n' }, { r: 0, c: 1, input: 'doble' }, { r: 1, c: 0, input: '3' }, { r: 2, c: 0, input: '1' }, { r: 3, c: 0, input: '2' }, { r: 1, c: 1, input: '=A2*2' }, { r: 2, c: 1, input: '=A3*2' }, { r: 3, c: 1, input: '=A4*2' }]);
+S.sortRange(s2, { r1: 0, c1: 0, r2: 3, c2: 1 }, 0, true, true);
+t('sort valores', [1, 2, 3].map(r => [S.getValue(s2, r, 0), S.getValue(s2, r, 1)]), [[1, 2], [2, 4], [3, 6]]);
+S.setFilter(s2, { r1: 0, c1: 0, r2: 3, c2: 1, col: 0, hidden: ['2'] }); t('filtro', [0, 1, 2, 3].map(r => S.isRowHidden(s2, r)), [false, false, true, false]);
+S.setInputs(sh, [{ r: 20, c: 0, input: '=SUMA(Hoja2!A2:A4)' }]); S.renameSheet(s2, 'Datos');
+t('rename actualiza ref', [S.getInput(sh, 20, 0), S.getValue(sh, 20, 0)], ['=SUMA(Datos!A2:A4)', 6]);
+// xlsx
+t('formulaToEnglish', S.formulaToEnglish('=SI(A1>1,5;"a;b";SUMA(A1:A3))'), 'IF(A1>1.5,"a;b",SUM(A1:A3))');
+const buf = S.exportXlsxBuffer();
+const raw = XLSX.read(buf, { type: 'array', cellFormula: true, cellNF: true }); t('xlsx fórmula en inglés', raw.Sheets['Hoja1']['C1'].f, 'VLOOKUP(2,A1:B3,2,FALSE)'); t('xlsx z cop', raw.Sheets['Hoja1']['A13'].z, '"$" #,##0.00');
+S.importXlsx(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength) as ArrayBuffer);
+const h1 = S.getSheetByName('Hoja1')!.id;
+t('import conserva fórmula', [S.getInput(h1, 3, 0), S.getValue(h1, 3, 0)], ['=SUMA(A1:A3)', 1239.5]);
+t('import BUSCARV', [S.getInput(h1, 0, 2), S.getValue(h1, 0, 2)], ['=BUSCARV(2;A1:B3;2;FALSO)', 'dos']);
+t('import cop', S.getDisplay(h1, 12, 0), '$ 1.234.567,00');
+// csv
+const csv = S.exportCsv(h1); t('csv línea 1', csv.split('\r\n')[0], '1234,5;uno;dos');
+S.importCsv('a;b\n1,5;2\n', 'CSV'); const cs = S.getSheetByName('CSV')!.id; t('import csv', S.getValue(cs, 1, 0), 1.5);
+S.importCsv('a,b\n1.5,2\n', 'CSV2'); t('import csv coma', S.getValue(S.getSheetByName('CSV2')!.id, 1, 0), 1.5);
+console.log(`\n${ok} OK, ${fail} fallas`); process.exit(fail ? 1 : 0);

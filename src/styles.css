@@ -1,0 +1,8 @@
+/* Base global (orquestador). Cada componente trae su propio CSS en su carpeta. */
+:root { --bg:#f7f8fa; --panel:#fff; --line:#e2e5ea; --text:#1d2330; --muted:#6b7385; --accent:#107c41; --accent2:#5b4bff; --sel:rgba(16,124,65,.12); font-family: 'Segoe UI', system-ui, -apple-system, sans-serif; }
+* { box-sizing: border-box; }
+html, body, #root { margin:0; height:100%; background:var(--bg); color:var(--text); }
+.app { display:flex; height:100vh; overflow:hidden; }
+.main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.grid-area { flex:1; position:relative; overflow:hidden; }
+@media (max-width: 820px) { .app { flex-direction:column; } }
