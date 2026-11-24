@@ -4,6 +4,7 @@ import { parseRange, rangeToA1, toA1 } from '../../core/a1';
 import { useStoreVersion, useEditVersion, focusGrid } from './Grid';
 import { cursor, syncCursor, select, getEdit, startEdit, setEditValue, cancelEdit, commitEdit, setEditSource } from './gridState';
 import './grid.css';
+import { AiFormulaButton } from '../chat/AiFormula';
 
 export function FormulaBar() {
   useStoreVersion();
@@ -43,6 +44,7 @@ export function FormulaBar() {
         onBlur={() => setNameDraft(null)}
         onKeyDown={(e) => { if (e.key === 'Enter') goTo(e.currentTarget.value); else if (e.key === 'Escape') { setNameDraft(null); focusGrid(); } }} />
       <button className="ag-fx" title="Insertar función" onClick={() => { if (!getEdit().editing) startEdit('bar', '='); else setEditSource('bar'); inRef.current?.focus(); }}>fx</button>
+      <AiFormulaButton />
       <input ref={inRef} className="ag-finput" aria-label="Barra de fórmulas" spellCheck={false} autoComplete="off"
         value={value}
         onFocus={() => { if (!getEdit().editing) startEdit('bar'); else setEditSource('bar'); }}

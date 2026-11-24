@@ -32,3 +32,13 @@ El navegador es la fuente de verdad. Cada herramienta del agente viaja por WebSo
 ## Decisiones
 
 Ver `docs/decisiones.md` y `docs/decisiones-agente.md`.
+
+## Qué hace
+
+- **Agente en el panel derecho**, en modo «Autónomo» o «Preguntar antes de aplicar». Crea tablas, fórmulas, formatos, hojas, gráficos y macros; ordena y filtra; trae datos de una URL; explica fórmulas y errores. Todo lo de una petición se deshace con un clic.
+- **Sugerencias proactivas**: cuando la hoja queda quieta, el agente propone tres acciones como botones.
+- **Fórmulas con IA**: el botón ✨ de la barra de fórmulas, o escribir `=? lo que necesitas` en una celda, propone la fórmula en español con su explicación.
+- **Hoja manual completa**: varias hojas, barra de fórmulas, atajos de Excel, copiar y pegar con Excel y Google Sheets, formato COP, porcentaje y fecha, ordenar, filtrar, gráficos, macros, importar y exportar .xlsx/.csv, y el libro se guarda al recargar.
+
+Versión pública sin agente: https://andrescanocano.github.io/agentsheet/
+Guion de la demo: `docs/guion-demo.md`.

@@ -194,3 +194,15 @@ export async function suggest(context: string): Promise<{ titulo: string; prompt
   const arr = JSON.parse(j);
   return (Array.isArray(arr) ? arr : []).slice(0, 3).filter((s: any) => s?.titulo && s?.prompt);
 }
+
+export async function formula(descripcion: string, celda: string, contexto: string): Promise<{ formula: string; explicacion: string }> {
+  const q = query({
+    prompt: `Hoja de cálculo (contexto):\n${contexto.slice(0, 8000)}\n\nCelda activa: ${celda}\nEl usuario quiere en esa celda: "${descripcion}"\n\nEscribe UNA fórmula de hoja de cálculo en ESPAÑOL (SUMA, PROMEDIO, CONTAR.SI, SUMAR.SI, SUMAR.SI.CONJUNTO, BUSCARV con ;FALSO, BUSCARX, SI, REDONDEAR, SI.ERROR...), separador ';', coma decimal, referencias A1 reales del contexto (rangos absolutos cuando convenga, otras hojas como Hoja!A1). No uses SUMAPRODUCTO. Responde SOLO JSON: {"formula":"=...","explicacion":"una o dos frases en español de Colombia"}`,
+    options: { model: 'claude-sonnet-5-5', tools: [], maxTurns: 1, settingSources: [], systemPrompt: 'Respondes solo JSON válido, en español de Colombia.', pathToClaudeCodeExecutable: CLAUDE_BIN, env: cleanEnv(), persistSession: false } as any,
+  });
+  let text = '';
+  for await (const m of q) if (m.type === 'result' && m.subtype === 'success') text = m.result;
+  const j = JSON.parse(text.slice(text.indexOf('{'), text.lastIndexOf('}') + 1));
+  let f = String(j.formula ?? '').trim(); if (f && !f.startsWith('=')) f = '=' + f;
+  return { formula: f, explicacion: String(j.explicacion ?? '') };
+}

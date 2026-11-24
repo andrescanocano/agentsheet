@@ -4,7 +4,7 @@ import { createServer } from 'node:http';
 import { WebSocketServer, WebSocket } from 'ws';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { runAgent, suggest, type Bridge } from './agent';
+import { runAgent, suggest, formula, type Bridge } from './agent';
 
 delete process.env.ANTHROPIC_API_KEY; // nunca una llave: el plan de suscripción vía la sesión local de `claude`
 
@@ -16,6 +16,11 @@ app.get('/api/health', (_req, res) => { res.json({ ok: true }); });
 app.post('/api/suggest', async (req, res) => {
   try { res.json({ suggestions: await suggest(String(req.body?.context ?? '')) }); }
   catch (e: any) { res.status(500).json({ error: String(e?.message ?? e), suggestions: [] }); }
+});
+
+app.post('/api/formula', async (req, res) => {
+  try { const b = req.body ?? {}; res.json(await formula(String(b.descripcion ?? ''), String(b.celdaActiva ?? 'A1'), String(b.contexto ?? ''))); }
+  catch (e: any) { res.status(500).json({ error: String(e?.message ?? e) }); }
 });
 
 const server = createServer(app);
