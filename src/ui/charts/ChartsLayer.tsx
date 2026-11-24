@@ -8,7 +8,7 @@ import {
 import * as S from '../../core/store';
 import { rangeToA1 } from '../../core/a1';
 import type { ChartData, ChartType } from '../../core/types';
-import { readSeries, PALETTE, fmtCOP, fmtCOPShort } from './chartData';
+import { readSeries, PALETTE, fmtValue, fmtAxis } from './chartData';
 import { useToolbarSlot } from './toolbarSlot';
 import './charts.css';
 
@@ -39,11 +39,11 @@ function buildConfig(ch: ChartData) {
       responsive: true, maintainAspectRatio: false, animation: { duration: 250 },
       plugins: {
         legend: { display: round || s.datasets.length > 1, position: 'bottom' as const, labels: { boxWidth: 12, boxHeight: 12 } },
-        tooltip: { callbacks: { label: (c: any) => `${c.dataset.label}: ${fmtCOP.format(Number(c.raw ?? 0))}` } },
+        tooltip: { callbacks: { label: (c: any) => `${c.dataset.label}: ${fmtValue(Number(c.raw ?? 0), c.dataset.fmt ?? 'number')}` } },
       },
       scales: round ? {} : {
         x: { grid: { display: false } },
-        y: { beginAtZero: true, grid: { color: '#eef0f3' }, ticks: { callback: (v: any) => fmtCOPShort(Number(v)) } },
+        y: { beginAtZero: true, grid: { color: '#eef0f3' }, ticks: { callback: (v: any) => fmtAxis(Number(v), s.datasets[0]?.fmt ?? 'number') } },
       },
     },
   } as any;

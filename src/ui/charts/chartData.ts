@@ -24,7 +24,26 @@ function num(v: CellValue): number | null {
 const isText = (v: CellValue) => typeof v === 'string' && v.trim() !== '' && num(v) === null;
 const label = (v: CellValue) => (v == null ? '' : typeof v === 'object' ? v.error : String(v));
 
-export interface Series { labels: string[]; datasets: { label: string; data: (number | null)[] }[] }
+export type SeriesFmt = 'cop' | 'percent' | 'number';
+export interface Series { labels: string[]; datasets: { label: string; data: (number | null)[]; fmt: SeriesFmt }[] }
+
+const nfNum = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 });
+const nfPct = new Intl.NumberFormat('es-CO', { maximumFractionDigits: 1 });
+/** Formato completo (tooltip) según el formato de la celda de datos. */
+export function fmtValue(n: number, f: SeriesFmt): string {
+  if (f === 'cop') return fmtCOP.format(n);
+  if (f === 'percent') return nfPct.format(n * 100) + '%';
+  return nfNum.format(n);
+}
+/** Formato corto (eje Y) según el formato de la celda de datos. */
+export function fmtAxis(n: number, f: SeriesFmt): string {
+  if (f === 'cop') return fmtCOPShort(n);
+  if (f === 'percent') return nfPct.format(n * 100) + '%';
+  const a = Math.abs(n);
+  if (a >= 1e9) return (n / 1e9).toLocaleString('es-CO', { maximumFractionDigits: 1 }) + ' mil M';
+  if (a >= 1e6) return (n / 1e6).toLocaleString('es-CO', { maximumFractionDigits: 1 }) + ' M';
+  return nfNum.format(n);
+}
 
 export function readSeries(sheetId: string, range: string): Series {
   let g;
@@ -53,7 +72,9 @@ export function readSeries(sheetId: string, range: string): Series {
   const datasets = dataCols.map((c, i) => {
     const data: (number | null)[] = [];
     for (let r = r0; r <= g.r2; r++) data.push(num(v(r, c)));
-    return { label: hasHeader ? label(v(g.r1, c)) : 'Serie ' + (i + 1), data };
+    const nf = S.getStyle(sheetId, r0, c).numFmt;
+    const fmt: SeriesFmt = nf === 'cop' ? 'cop' : nf === 'percent' ? 'percent' : 'number';
+    return { label: hasHeader ? label(v(g.r1, c)) : 'Serie ' + (i + 1), data, fmt };
   });
   return { labels, datasets };
 }
