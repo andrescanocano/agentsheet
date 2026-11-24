@@ -1,0 +1,102 @@
+[
+ {
+  "Producto": "Portátil Lenovo ThinkPad",
+  "Costo unitario": 2850000,
+  "Proveedor": "Lenovo Colombia"
+ },
+ {
+  "Producto": "Monitor Dell 24 pulgadas",
+  "Costo unitario": 620000,
+  "Proveedor": "Dell Andina"
+ },
+ {
+  "Producto": "Mouse inalámbrico Logitech",
+  "Costo unitario": 45000,
+  "Proveedor": "Logitech Distribución"
+ },
+ {
+  "Producto": "Teclado Logitech K120",
+  "Costo unitario": 38000,
+  "Proveedor": "Logitech Distribución"
+ },
+ {
+  "Producto": "Impresora HP LaserJet",
+  "Costo unitario": 890000,
+  "Proveedor": "HP Inc. Colombia"
+ },
+ {
+  "Producto": "Silla ergonómica",
+  "Costo unitario": 540000,
+  "Proveedor": "Muebles Medellín"
+ },
+ {
+  "Producto": "Escritorio en L",
+  "Costo unitario": 720000,
+  "Proveedor": "Muebles Medellín"
+ },
+ {
+  "Producto": "Disco SSD 1 TB",
+  "Costo unitario": 310000,
+  "Proveedor": "Kingston Mayorista"
+ },
+ {
+  "Producto": "Memoria USB 64 GB",
+  "Costo unitario": 28000,
+  "Proveedor": "Kingston Mayorista"
+ },
+ {
+  "Producto": "Audífonos Jabra",
+  "Costo unitario": 260000,
+  "Proveedor": "Jabra Andina"
+ },
+ {
+  "Producto": "Cámara web Logitech C920",
+  "Costo unitario": 230000,
+  "Proveedor": "Logitech Distribución"
+ },
+ {
+  "Producto": "Router TP-Link",
+  "Costo unitario": 150000,
+  "Proveedor": "TP-Link Colombia"
+ },
+ {
+  "Producto": "Tóner HP 85A",
+  "Costo unitario": 210000,
+  "Proveedor": "HP Inc. Colombia"
+ },
+ {
+  "Producto": "Resma papel carta",
+  "Costo unitario": 19000,
+  "Proveedor": "Papelería Nacional"
+ },
+ {
+  "Producto": "Tablet Samsung Galaxy Tab",
+  "Costo unitario": 980000,
+  "Proveedor": "Samsung Electronics"
+ },
+ {
+  "Producto": "Celular Samsung Galaxy A55",
+  "Costo unitario": 1350000,
+  "Proveedor": "Samsung Electronics"
+ },
+ {
+  "Producto": "Proyector Epson",
+  "Costo unitario": 1900000,
+  "Proveedor": "Epson Colombia"
+ },
+ {
+  "Producto": "Base refrigerante para portátil",
+  "Costo unitario": 65000,
+  "Proveedor": "Tecnoaccesorios"
+ },
+ {
+  "Producto": "Cable HDMI 2 m",
+  "Costo unitario": 18000,
+  "Proveedor": "Tecnoaccesorios"
+ },
+ {
+  "Producto": "UPS APC 1500 VA",
+  "Costo unitario": 780000,
+  "Proveedor": "APC Schneider"
+ }
+]
